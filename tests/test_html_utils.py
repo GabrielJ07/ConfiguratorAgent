@@ -34,7 +34,6 @@ def test_clean_html_mixed_content():
         <a href="http://example.com">Link</a>
     </div>
     """
-    expected_output = "Title\n        Paragraph 1\nwith break\n\nParagraph 2\n        Link"
     # Note: clean_html uses strip() at the end, but internal whitespace is preserved
     # except for what tags replace.
     result = clean_html(html_input)
