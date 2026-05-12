@@ -34,7 +34,6 @@ def test_clean_html_mixed_content():
         <a href="http://example.com">Link</a>
     </div>
     """
-    expected_output = "Title\n        Paragraph 1\nwith break\n\nParagraph 2\n        Link"
     # Note: clean_html uses strip() at the end, but internal whitespace is preserved
     # except for what tags replace.
     result = clean_html(html_input)
@@ -51,5 +50,12 @@ def test_clean_html_complex_entities_and_tags():
     assert clean_html(html_input) == "Bold & Italic"
 
 def test_clean_html_multiline_tags():
-    html_input = '<div\nclass="test">content</div>'
-    assert clean_html(html_input) == "content"
+    html_input = "<div\nclass='test'>Multiline Content</div>"
+    assert clean_html(html_input) == "Multiline Content"
+
+    html_input_complex = "<script\ntype='text/javascript'>\nalert('hi');\n</script>Just text"
+    # Note: this simple regex cleaner will leave the content of the script tag
+    # but it should at least remove the tags themselves even if they span lines.
+    cleaned = clean_html(html_input_complex)
+    assert "<script" not in cleaned
+    assert "</script>" not in cleaned
